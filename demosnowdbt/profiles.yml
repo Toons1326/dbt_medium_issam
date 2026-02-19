@@ -1,0 +1,9 @@
+demosnowdbt:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      role: SNOWFLAKE_LEARNING_ROLE
+      warehouse: SNOWFLAKE_LEARNING_WH
+      database: SNOWFLAKE_LEARNING_DB
+      schema: PUBLIC
