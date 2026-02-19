@@ -1,0 +1,47 @@
+name: PR Accepted Deployment
+run-name: PR from ${{ github.actor }} accepted - triggered a ${{ github.event_name }}
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  run-snowflake-dbt-job:
+    name: "Run on Accepted PR"
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      SNOWFLAKE_CLI_FEATURES_ENABLE_DBT: true
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
+      SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install Snowflake CLI
+        uses: snowflakedb/snowflake-cli-action@v2.0
+
+      - name: Check Snowflake CLI Version
+        run: snow --version
+
+      - name: Test Snowflake Connection
+        run: snow connection test -x
+
+      - name: Deploy dbt project object to production
+        run: snow dbt deploy tasty_bytes_dbt_object_gh_action --source ./tasty_bytes --default-target prod --force -x
+
+      - name: List all dbt project objects
+        run: snow dbt list -x
+
+      # (optional) Uncomment below to manage Task orchestration via source control
+      # - name: Run schedules.sql to create or alter tasks
+      #   run: snow sql -f ${{ github.workspace }}/tasty_bytes/schedules.sql -x
