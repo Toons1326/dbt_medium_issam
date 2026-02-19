@@ -38,13 +38,13 @@ jobs:
         run: snow connection test -x
 
       - name: Create a tester dbt project object
-        run: snow dbt deploy my_tester_dbt_project_object_gh_action --source ./tasty_bytes --force -x
+        run: snow dbt deploy demosnowdbt_tester_gh_action --source ./demosnowdbt --force -x
 
       - name: List all dbt project objects
         run: snow dbt list -x
 
       - name: Execute dbt run on tester project
-        run: snow dbt execute -x my_tester_dbt_project_object_gh_action run --target dev
+        run: snow dbt execute -x demosnowdbt_tester_gh_action run --target dev
 
       - name: Execute dbt test on tester project
-        run: snow dbt execute -x my_tester_dbt_project_object_gh_action test --target dev
+        run: snow dbt execute -x demosnowdbt_tester_gh_action test --target dev
