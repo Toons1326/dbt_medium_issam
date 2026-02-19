@@ -37,11 +37,7 @@ jobs:
         run: snow connection test -x
 
       - name: Deploy dbt project object to production
-        run: snow dbt deploy tasty_bytes_dbt_object_gh_action --source ./tasty_bytes --default-target prod --force -x
+        run: snow dbt deploy demosnowdbt_prod_gh_action --source ./demosnowdbt --default-target prod --force -x
 
       - name: List all dbt project objects
         run: snow dbt list -x
-
-      # (optional) Uncomment below to manage Task orchestration via source control
-      # - name: Run schedules.sql to create or alter tasks
-      #   run: snow sql -f ${{ github.workspace }}/tasty_bytes/schedules.sql -x
