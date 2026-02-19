@@ -3,7 +3,13 @@ demosnowdbt:
   outputs:
     dev:
       type: snowflake
-      role: SNOWFLAKE_LEARNING_ROLE
-      warehouse: SNOWFLAKE_LEARNING_WH
-      database: SNOWFLAKE_LEARNING_DB
-      schema: PUBLIC
+      role: DBT_ROLE
+      warehouse: DBT_WH
+      database: DBT_DEV_DB
+      schema: DBT_SCHEMA
+    prod:
+      type: snowflake
+      role: DBT_ROLE
+      warehouse: DBT_WH
+      database: DBT_PROD_DB
+      schema: DBT_SCHEMA
