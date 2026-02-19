@@ -1,0 +1,50 @@
+name: Incoming PR
+run-name: PR opened by ${{ github.actor }}
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  run-snowflake-test-dbt-job:
+    name: "Run on Incoming PR"
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      SNOWFLAKE_CLI_FEATURES_ENABLE_DBT: true
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_SCHEMA: ${{ vars.SNOWFLAKE_SCHEMA }}
+      SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install Snowflake CLI
+        uses: snowflakedb/snowflake-cli-action@v2.0
+
+      - name: Check Snowflake CLI Version
+        run: snow --version
+
+      - name: Test Snowflake Connection
+        run: snow connection test -x
+
+      - name: Create a tester dbt project object
+        run: snow dbt deploy my_tester_dbt_project_object_gh_action --source ./tasty_bytes --force -x
+
+      - name: List all dbt project objects
+        run: snow dbt list -x
+
+      - name: Execute dbt run on tester project
+        run: snow dbt execute -x my_tester_dbt_project_object_gh_action run --target dev
+
+      - name: Execute dbt test on tester project
+        run: snow dbt execute -x my_tester_dbt_project_object_gh_action test --target dev
