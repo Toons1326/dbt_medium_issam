@@ -43,4 +43,4 @@ jobs:
         run: snow dbt list -x
 
       - name: Deploy Snowflake Tasks for orchestration
-        run: snow sql -f ${{ github.workspace }}/demosnowdbt/schedules.sql -x
+        run: snow sql -f ${{ github.workspace }}/config_scripts/schedules.sql -x
