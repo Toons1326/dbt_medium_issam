@@ -1,6 +1,10 @@
 USE ROLE DBT_ROLE;
 USE WAREHOUSE DBT_WH;
 
+-- Suspend before modifying (ignore errors if tasks don't exist yet)
+ALTER TASK IF EXISTS DBT_PROD_DB.DBT_SCHEMA.dbt_daily_test SUSPEND;
+ALTER TASK IF EXISTS DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run SUSPEND;
+
 -- Task 1 : dbt run every day at midnight UTC
 CREATE OR ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run
   WAREHOUSE = DBT_WH
@@ -17,8 +21,8 @@ CREATE OR ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_test
   AFTER DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run
 AS
   EXECUTE DBT PROJECT DBT_PROD_DB.DBT_SCHEMA.demosnowdbt_prod_gh_action
-    ARGS = 'run --target prod';
-  
--- Resume tasks (child first, then parent)
+    ARGS = 'test --target prod';
+
+-- Resume (child first, then parent)
 ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_test RESUME;
 ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run RESUME;
