@@ -1,9 +1,9 @@
 USE ROLE DBT_ROLE;
 USE WAREHOUSE DBT_WH;
 
--- Suspend before modifying (ignore errors if tasks don't exist yet)
-ALTER TASK IF EXISTS DBT_PROD_DB.DBT_SCHEMA.dbt_daily_test SUSPEND;
+-- Root FIRST, then child
 ALTER TASK IF EXISTS DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run SUSPEND;
+ALTER TASK IF EXISTS DBT_PROD_DB.DBT_SCHEMA.dbt_daily_test SUSPEND;
 
 -- Task 1 : dbt run every day at midnight UTC
 CREATE OR ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run
