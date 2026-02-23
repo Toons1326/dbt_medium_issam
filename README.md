@@ -1,5 +1,8 @@
 # demo_snowflake_dbt-v2
 
+### **Author:** Issam Ed-Daou ·  [Portfolio](https://eddaouissam.github.io/)
+
+
 CI/CD pipeline for dbt using Snowflake's **native dbt integration** — no local dbt install needed.
 
 This is the V2 of [demo_snowflake_dbt](https://github.com/eddaouissam/demo_snowflake_dbt). The main difference is that dbt now runs entirely inside Snowflake (Workspaces + dbt Project objects), and orchestration is handled by Snowflake Tasks instead of GitHub Actions cron.
