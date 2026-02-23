@@ -13,12 +13,12 @@ AS
 -- Task 2 : dbt test chained after the run
 CREATE OR ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_test
   WAREHOUSE = DBT_WH
-  AFTER DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run
   COMMENT = 'Daily dbt test after production run'
+  AFTER DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run
 AS
   EXECUTE DBT PROJECT DBT_PROD_DB.DBT_SCHEMA.demosnowdbt_prod_gh_action
     COMMAND = 'test';
-
+  
 -- Resume tasks (child first, then parent)
 ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_test RESUME;
 ALTER TASK DBT_PROD_DB.DBT_SCHEMA.dbt_daily_run RESUME;
